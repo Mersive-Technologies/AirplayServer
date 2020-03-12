@@ -5,7 +5,7 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O2 -g  -fno-strict-aliasing  -D_GNU_SOURCE 
 add_definitions(-DMDNS_UDS_SERVERPATH="/dev/socket/mdnsd" )
 add_definitions(-DMDNS_USERNAME="mdnsr" )
 
-include_directories(mDNSPosix mDNSCore mDNSShared)
+include_directories(mDNSShared)
 add_library( jdns_sd
         SHARED
         mDNSShared/dnssd_clientlib.c
