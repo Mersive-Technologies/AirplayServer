@@ -60,14 +60,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
         mAirPlayServer.startServer();
         int airplayPort = mAirPlayServer.getPort();
         if (airplayPort == 0) {
-            Toast.makeText(this.getApplicationContext(), "启动airplay服务失败", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this.getApplicationContext(), "Failed to start airplay service", Toast.LENGTH_SHORT).show();
         } else {
             mDNSNotify.registerAirplay(airplayPort);
         }
         mRaopServer.startServer();
         int raopPort = mRaopServer.getPort();
         if (raopPort == 0) {
-            Toast.makeText(this.getApplicationContext(), "启动raop服务失败", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this.getApplicationContext(), "Failed to start raop service", Toast.LENGTH_SHORT).show();
         } else {
             mDNSNotify.registerRaop(raopPort);
         }

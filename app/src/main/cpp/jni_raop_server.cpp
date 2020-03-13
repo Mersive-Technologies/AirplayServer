@@ -113,7 +113,7 @@ Java_com_fang_myapplication_RaopServer_start(JNIEnv* env, jobject object) {
     raop_set_log_callback(raop, log_callback, NULL);
     raop_set_log_level(raop, RAOP_LOG_DEBUG);
 
-    unsigned short port = 0;
+    unsigned short port = 7000;
     raop_start(raop, &port);
     raop_set_port(raop, port);
     LOGD("raop port = % d", raop_get_port(raop));
