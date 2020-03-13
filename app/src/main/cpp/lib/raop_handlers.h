@@ -84,9 +84,26 @@ raop_handler_info(raop_conn_t *conn,
 			,0x00,0x00,0x00,0x3e,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
 			,0x00,0x00,0x02,0xa8
 	};
-	size_t len = sizeof(info);
-	*response_data = malloc(len);
-	memcpy(*response_data, info, len);
+
+	// Parse hard-coded binary
+	plist_t root_node = NULL;
+	plist_from_bin(info, sizeof(info), &root_node);
+
+	// TODO: insert txtAirplay and txtRAOP
+	plist_t airplay = plist_new_data("blah", sizeof("blah"));
+	plist_t raop = plist_new_data("blah", sizeof("blah"));
+	plist_dict_set_item(root_node, "txtAirPlay", airplay);
+	plist_dict_set_item(root_node, "txtRAOP", raop);
+
+	// Serialize modified plist
+	char* rsp = NULL;
+	uint32_t len = 0;
+	plist_to_bin(root_node, &rsp, &len);
+
+	// Send response
+	size_t info_len = sizeof(info);
+	*response_data = malloc(info_len);
+	memcpy(*response_data, info, info_len);
 	if (*response_data) {
         http_response_add_header(response, "Content-Type", "application/x-apple-binary-plist");
         //http_response_add_header(response, "Date", "Sun, 27 Jan 2019 10:32:17 GMT");
@@ -266,7 +283,7 @@ raop_handler_setup(raop_conn_t *conn,
     }
 
 
-    // 解析bplist
+    // Parse bplist
     plist_t root_node = NULL;
     plist_from_bin(data, datalen, &root_node);
     plist_t streams_note = plist_dict_get_item(root_node, "streams");
@@ -275,7 +292,7 @@ raop_handler_setup(raop_conn_t *conn,
 		unsigned char aeskey[16];
         setup++;
         logger_log(conn->raop->logger, LOGGER_DEBUG, "SETUP 1");
-        // 第一次setup
+        // First setup
         plist_t eiv_note = plist_dict_get_item(root_node, "eiv");
         char* eiv= NULL;
         uint64_t eiv_len = 0;
@@ -287,12 +304,12 @@ raop_handler_setup(raop_conn_t *conn,
         uint64_t ekey_len = 0;
         plist_get_data_val(ekey_note, &ekey, &ekey_len);
         logger_log(conn->raop->logger, LOGGER_DEBUG, "ekey_len = %llu", ekey_len);
-        // 时间port
+        // Time port
 		uint64_t timing_rport;
         plist_t time_note = plist_dict_get_item(root_node, "timingPort");
         plist_get_uint_val(time_note, &timing_rport);
 		logger_log(conn->raop->logger, LOGGER_DEBUG, "timing_rport = %llu", timing_rport);
-        // ekey是72字节
+        // ekey is 72 bytes
         int ret = fairplay_decrypt(conn->fairplay, ekey, aeskey);
         logger_log(conn->raop->logger, LOGGER_DEBUG, "fairplay_decrypt ret = %d", ret);
 		unsigned char ecdh_secret[32];
@@ -355,7 +372,7 @@ raop_handler_setup(raop_conn_t *conn,
             logger_log(conn->raop->logger, LOGGER_ERR, "RAOP not initialized at SETUP, playing will fail!");
             http_response_set_disconnect(response, 1);
         }
-        // 需要返回端口
+        // Need to return port
 		/**
 		 * <dict>
 	<key>streams</key>

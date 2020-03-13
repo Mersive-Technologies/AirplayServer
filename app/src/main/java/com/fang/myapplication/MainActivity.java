@@ -11,13 +11,15 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.apple.dnssd.TXTRecord;
+
 public class MainActivity extends Activity implements View.OnClickListener {
 
     public static String TAG = "MainActivity";
 
     private AirPlayServer mAirPlayServer;
     private RaopServer mRaopServer;
-//    private DNSNotify mDNSNotify;
+    private DNSNotify mDNSNotify;
     private BleAdvertiser mAdvertiser;
 
     private SurfaceView mSurfaceView;
@@ -36,7 +38,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         mSurfaceView = findViewById(R.id.surface);
         mAirPlayServer = new AirPlayServer();
         mRaopServer = new RaopServer(mSurfaceView);
-//        mDNSNotify = new DNSNotify();
+        mDNSNotify = new DNSNotify();
 
         WifiManager wm = (WifiManager)getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         mAdvertiser = new BleAdvertiser(wm);
@@ -62,26 +64,34 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     private void startServer() {
         mAdvertiser.start();
-//        mDNSNotify.changeDeviceName();
+        mDNSNotify.changeDeviceName();
         mAirPlayServer.startServer();
+        TXTRecord airplayRecord = null;
+        TXTRecord raopRecord = null;
         int airplayPort = mAirPlayServer.getPort();
         if (airplayPort == 0) {
             Toast.makeText(this.getApplicationContext(), "Failed to start airplay service", Toast.LENGTH_SHORT).show();
         } else {
-//            mDNSNotify.registerAirplay(airplayPort);
+            airplayRecord = mDNSNotify.registerAirplay(airplayPort);
         }
         mRaopServer.startServer();
         int raopPort = mRaopServer.getPort();
         if (raopPort == 0) {
             Toast.makeText(this.getApplicationContext(), "Failed to start raop service", Toast.LENGTH_SHORT).show();
         } else {
-//            mDNSNotify.registerRaop(raopPort);
+            raopRecord = mDNSNotify.registerRaop(raopPort);
+        }
+        if(airplayRecord != null) {
+            mRaopServer.setAirplayRecord(airplayRecord.getRawBytes());
+        }
+        if(raopRecord != null) {
+            mRaopServer.setRaopRecord(raopRecord.getRawBytes());
         }
         Log.d(TAG, "airplayPort = " + airplayPort + ", raopPort = " + raopPort);
     }
 
     private void stopServer() {
-//        mDNSNotify.stop();
+        mDNSNotify.stop();
         mAirPlayServer.stopServer();
         mRaopServer.stopServer();
     }

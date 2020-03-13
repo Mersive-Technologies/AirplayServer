@@ -93,6 +93,26 @@ JNI_OnLoad(JavaVM* vm, void* reserved) {
     return JNI_VERSION_1_6;
 }
 
+extern "C" JNIEXPORT void JNICALL
+Java_com_fang_myapplication_RaopServer_setAirplayRecord(JNIEnv* env, jobject object, jbyteArray array) {
+    jbyte* bufferPtr = env->GetByteArrayElements(array, NULL);
+    jsize lengthOfArray = env->GetArrayLength(array);
+
+    // TODO: save for later
+
+    env->ReleaseByteArrayElements(array, bufferPtr, 0);
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_fang_myapplication_RaopServer_setRaopRecord(JNIEnv* env, jobject object, jbyteArray array) {
+    jbyte* bufferPtr = env->GetByteArrayElements(array, NULL);
+    jsize lengthOfArray = env->GetArrayLength(array);
+
+    // TODO: save for later
+
+    env->ReleaseByteArrayElements(array, bufferPtr, 0);
+}
+
 extern "C" JNIEXPORT jlong JNICALL
 Java_com_fang_myapplication_RaopServer_start(JNIEnv* env, jobject object) {
     raop_t *raop;

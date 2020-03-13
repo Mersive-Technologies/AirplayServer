@@ -527,7 +527,7 @@ raop_rtp_thread_udp(void *arg)
     return 0;
 }
 
-// 启动rtp服务,三个udp端口
+// Start rtp service, three udp ports
 void
 raop_rtp_start_audio(raop_rtp_t *raop_rtp, int use_udp, unsigned short control_rport, unsigned short timing_rport,
                      unsigned short *control_lport, unsigned short *timing_lport, unsigned short *data_lport)

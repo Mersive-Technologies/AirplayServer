@@ -84,6 +84,8 @@ public class RaopServer implements SurfaceHolder.Callback {
         return 0;
     }
 
+    public native void setAirplayRecord(byte[] bytes);
+    public native void setRaopRecord(byte[] bytes);
     private native long start();
     private native void stop(long serverId);
     private native int getPort(long serverId);
