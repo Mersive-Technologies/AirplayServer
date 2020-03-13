@@ -2,6 +2,7 @@ package com.fang.myapplication;
 
 import android.app.Activity;
 import android.content.Context;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.SurfaceView;
@@ -17,6 +18,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private AirPlayServer mAirPlayServer;
     private RaopServer mRaopServer;
 //    private DNSNotify mDNSNotify;
+    private BleAdvertiser mAdvertiser;
 
     private SurfaceView mSurfaceView;
     private Button mBtnControl;
@@ -35,6 +37,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
         mAirPlayServer = new AirPlayServer();
         mRaopServer = new RaopServer(mSurfaceView);
 //        mDNSNotify = new DNSNotify();
+
+        WifiManager wm = (WifiManager)getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        mAdvertiser = new BleAdvertiser(wm);
     }
 
     @Override
@@ -56,6 +61,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     private void startServer() {
+        mAdvertiser.start();
 //        mDNSNotify.changeDeviceName();
         mAirPlayServer.startServer();
         int airplayPort = mAirPlayServer.getPort();

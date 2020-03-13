@@ -140,19 +140,23 @@ conn_request(void *ptr, http_request_t *request, http_response_t **response)
 	method = http_request_get_method(request);
 	url = http_request_get_url(request);
 	cseq = http_request_get_header(request, "CSeq");
-	if (!method || !cseq) {
+	if (!method) { // || !cseq) {
 		return;
 	}
 
 	*response = http_response_init("RTSP/1.0", 200, "OK");
 
-	http_response_add_header(*response, "CSeq", cseq);
+	if(cseq) {
+		http_response_add_header(*response, "CSeq", cseq);
+	}
 	//http_response_add_header(*response, "Apple-Jack-Status", "connected; type=analog");
 	http_response_add_header(*response, "Server", "AirTunes/220.68");
 
 	logger_log(conn->raop->logger, LOGGER_DEBUG, "Handling request %s with URL %s", method, url);
 	raop_handler_t handler = NULL;
 	if (!strcmp(method, "GET") && !strcmp(url, "/info")) {
+		handler = &raop_handler_info;
+	} else if (!strcmp(method, "GET") && !strcmp(url, "/info?txtAirPlay&txtRAOP")) {
 		handler = &raop_handler_info;
 	} else if (!strcmp(method, "POST") && !strcmp(url, "/pair-setup")) {
 		handler = &raop_handler_pairsetup;
