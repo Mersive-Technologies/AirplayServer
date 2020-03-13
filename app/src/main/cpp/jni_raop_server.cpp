@@ -99,7 +99,9 @@ Java_com_fang_myapplication_RaopServer_setAirplayRecord(JNIEnv* env, jobject obj
     jbyte* bufferPtr = env->GetByteArrayElements(array, NULL);
     jsize lengthOfArray = env->GetArrayLength(array);
 
-    raop_set_airplay(raop, (unsigned char *)malloc(lengthOfArray), lengthOfArray); // TODO: free
+    unsigned char *data = (unsigned char *)malloc(lengthOfArray);
+    memcpy(data, bufferPtr, lengthOfArray);
+    raop_set_airplay(raop, data, lengthOfArray); // TODO: free
 
     env->ReleaseByteArrayElements(array, bufferPtr, 0);
 }
@@ -110,7 +112,9 @@ Java_com_fang_myapplication_RaopServer_setRaopRecord(JNIEnv* env, jobject object
     jbyte* bufferPtr = env->GetByteArrayElements(array, NULL);
     jsize lengthOfArray = env->GetArrayLength(array);
 
-    raop_set_raop(raop, (unsigned char *)malloc(lengthOfArray), lengthOfArray); // TODO: free
+    unsigned char *data = (unsigned char *)malloc(lengthOfArray);
+    memcpy(data, bufferPtr, lengthOfArray);
+    raop_set_raop(raop, data, lengthOfArray); // TODO: free
 
     env->ReleaseByteArrayElements(array, bufferPtr, 0);
 }
