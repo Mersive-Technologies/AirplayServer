@@ -89,9 +89,9 @@ raop_handler_info(raop_conn_t *conn,
 	plist_t root_node = NULL;
 	plist_from_bin(info, sizeof(info), &root_node);
 
-	// TODO: insert txtAirplay and txtRAOP
-	plist_t airplay = plist_new_data("blah", sizeof("blah"));
-	plist_t raop = plist_new_data("blah", sizeof("blah"));
+	// Insert txtAirplay and txtRAOP
+	plist_t airplay = plist_new_data(conn->raop->txt_airplay, conn->raop->airplay_len);
+	plist_t raop = plist_new_data(conn->raop->txt_raop, conn->raop->raop_len);
 	plist_dict_set_item(root_node, "txtAirPlay", airplay);
 	plist_dict_set_item(root_node, "txtRAOP", raop);
 
@@ -101,9 +101,8 @@ raop_handler_info(raop_conn_t *conn,
 	plist_to_bin(root_node, &rsp, &len);
 
 	// Send response
-	size_t info_len = sizeof(info);
-	*response_data = malloc(info_len);
-	memcpy(*response_data, info, info_len);
+	*response_data = malloc(len);
+	memcpy(*response_data, rsp, len);
 	if (*response_data) {
         http_response_add_header(response, "Content-Type", "application/x-apple-binary-plist");
         //http_response_add_header(response, "Date", "Sun, 27 Jan 2019 10:32:17 GMT");

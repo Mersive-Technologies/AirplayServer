@@ -29,6 +29,7 @@
 #include "logger.h"
 #include "compat.h"
 #include "raop_rtp_mirror.h"
+#include "plist/bytearray.h"
 #include <android/log.h>
 
 struct raop_s {
@@ -41,6 +42,12 @@ struct raop_s {
 	/* Pairing, HTTP daemon and RSA key */
 	pairing_t *pairing;
 	httpd_t *httpd;
+
+	/* TXT records */
+	unsigned char *txt_airplay;
+	size_t airplay_len;
+	unsigned char *txt_raop;
+	size_t raop_len;
 
     unsigned short port;
 };
@@ -331,6 +338,23 @@ raop_set_port(raop_t *raop, unsigned short port)
     assert(raop);
     raop->port = port;
 }
+
+void
+raop_set_airplay(raop_t *raop, unsigned char *bytes, size_t len)
+{
+	assert(raop);
+	raop->txt_airplay = bytes;
+	raop->airplay_len = len;
+}
+
+void
+raop_set_raop(raop_t *raop, unsigned char *bytes, size_t len)
+{
+	assert(raop);
+	raop->txt_raop = bytes;
+	raop->raop_len = len;
+}
+
 
 unsigned short
 raop_get_port(raop_t *raop)
