@@ -16,7 +16,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     private AirPlayServer mAirPlayServer;
     private RaopServer mRaopServer;
-    private DNSNotify mDNSNotify;
+//    private DNSNotify mDNSNotify;
 
     private SurfaceView mSurfaceView;
     private Button mBtnControl;
@@ -34,7 +34,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         mSurfaceView = findViewById(R.id.surface);
         mAirPlayServer = new AirPlayServer();
         mRaopServer = new RaopServer(mSurfaceView);
-        mDNSNotify = new DNSNotify();
+//        mDNSNotify = new DNSNotify();
     }
 
     @Override
@@ -43,39 +43,39 @@ public class MainActivity extends Activity implements View.OnClickListener {
             case R.id.btn_control: {
                 if (!mIsStart) {
                     startServer();
-                    mTxtDevice.setText("设备名称:" + mDNSNotify.getDeviceName());
+                    mTxtDevice.setText("Device name:");// + mDNSNotify.getDeviceName());
                 } else {
                     stopServer();
-                    mTxtDevice.setText("未启动");
+                    mTxtDevice.setText("not initiated");
                 }
                 mIsStart = !mIsStart;
-                mBtnControl.setText(mIsStart ? "结束" : "开始");
+                mBtnControl.setText(mIsStart ? "End" : "Start");
                 break;
             }
         }
     }
 
     private void startServer() {
-        mDNSNotify.changeDeviceName();
+//        mDNSNotify.changeDeviceName();
         mAirPlayServer.startServer();
         int airplayPort = mAirPlayServer.getPort();
         if (airplayPort == 0) {
             Toast.makeText(this.getApplicationContext(), "Failed to start airplay service", Toast.LENGTH_SHORT).show();
         } else {
-            mDNSNotify.registerAirplay(airplayPort);
+//            mDNSNotify.registerAirplay(airplayPort);
         }
         mRaopServer.startServer();
         int raopPort = mRaopServer.getPort();
         if (raopPort == 0) {
             Toast.makeText(this.getApplicationContext(), "Failed to start raop service", Toast.LENGTH_SHORT).show();
         } else {
-            mDNSNotify.registerRaop(raopPort);
+//            mDNSNotify.registerRaop(raopPort);
         }
         Log.d(TAG, "airplayPort = " + airplayPort + ", raopPort = " + raopPort);
     }
 
     private void stopServer() {
-        mDNSNotify.stop();
+//        mDNSNotify.stop();
         mAirPlayServer.stopServer();
         mRaopServer.stopServer();
     }
